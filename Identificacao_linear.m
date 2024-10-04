@@ -10,10 +10,6 @@ Vt = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.349, 1.7588, 2.6537, 3.5481
 % Grau do polinômio
 n = 4; % Ajuste conforme necessário
 
-% Remover o ponto (0,0) dos dados para o ajuste
-Va = Va(1:end);
-Vt = Vt(1:end);
-
 % Construir a matriz A para o ajuste polinomial
 A = zeros(length(Va), n); % Inicializa a matriz A com zeros
 for i = 1:n
@@ -23,45 +19,73 @@ end
 % Solução do sistema normal para mínimos quadrados
 x = (A' * A) \ (A' * Vt'); % Vetor de coeficientes
 
-% Adicionar o coeficiente correspondente ao ponto (0, 0)
-x = [x; 0];
-
 % Exibir os coeficientes ajustados
 disp('Coeficientes do polinômio ajustado:')
 disp(x')
 
 % Gerar uma curva para visualização do ajuste
 Va_plot = linspace(min(Va), max(Va), 100);
-Vt_fit = polyval([x(1:end-1)' 0], Va_plot);
+Vt_fit = polyval([x' 0], Va_plot);
 
 % Plotar os pontos de dados e o ajuste
 figure;
-plot(Va, Vt, 'ro', 'DisplayName', 'Dados originais');
+scatter(Va, Vt, 'filled', 'MarkerFaceColor', 'k', 'DisplayName', 'Dados coletados');
 hold on;
-plot(Va_plot, Vt_fit, 'b-', 'DisplayName', 'Ajuste Polinomial');
-xlabel('Va');
-ylabel('Vt');
+plot(Va_plot, Vt_fit, 'g-', 'LineWidth', 1.5, 'DisplayName', 'Ajuste Polinomial');
+xlabel('Va (V)');
+ylabel('Vt (V)');
 legend show;
-title('Ajuste Polinomial dos Dados Usando Mínimos Quadrados');
 grid on;
 
 % Passo 3: Calcular a derivada do polinômio ajustado
 p = x;
-dp = polyder(p); % Derivada do polinômio ajustado
-dVt_dVa = polyval(dp, Va); % Avaliação da derivada ao longo de Va_fit
+dp = polyder([p' 0]); % Derivada do polinômio ajustado
+dVt_dVa = polyval(dp, Va); % Avaliação da derivada ao longo de Va
 
 % Plotando a derivada para identificar a região linear
 figure;
-plot(Va, dVt_dVa, 'k-', 'LineWidth', 1.5);
+plot(Va, dVt_dVa, 'k-', 'LineWidth', 1.5, 'DisplayName', 'Derivada do Ajuste Polinomial');
 xlabel('Va (V)');
-ylabel('dVt/dVa');
-title('Derivada do Ajuste Polinomial');
+ylabel('dVt/dVa (V/V)');
 grid on;
+hold on;
 
-% Identificação da região linear
-linear_region_indices = find(abs(diff(dVt_dVa)) < 0.05); % Critério para identificar estabilidade
-linear_region_Va = Va(linear_region_indices);
+% Filtrar os dados para a região linear (4.57 <= Va <= 11.27)
+Va_linear = Va(Va >= 4.57 & Va <= 11.558);
+Vt_linear = Vt(Va >= 4.57 & Va <= 11.558);
 
-% Exibição da região linear identificada
-disp('Região Linear (Va):');
-disp([min(linear_region_Va), max(linear_region_Va)]);
+% Realizar a regressão linear na região linear
+p_linear = polyfit(Va_linear, Vt_linear, 1);
+
+% Exibir a inclinação da reta (coeficiente angular)
+disp('Inclinação da reta na região linear (4.57 V <= Va <= 11.558 V):');
+disp(p_linear(1));
+
+% Avaliar os pontos das extremidades no polinômio
+Va_extremidades = [4.57, 11.558];
+dVt_dVa_extremidades = polyval(dp, Va_extremidades);
+
+% Plotar os pontos que representam as extremidades da região linear
+plot(Va_extremidades, dVt_dVa_extremidades, ...
+     'mo', 'MarkerFaceColor', 'r', 'MarkerSize', 5, 'DisplayName', 'Extremidades da Região Linear');
+
+legend show;
+
+% Plotar a reta constante da inclinação sobre a derivada
+plot(Va, p_linear(1)*ones(size(Va)), 'g--', 'LineWidth', 1.5, 'DisplayName', 'K_{reg}');
+
+derivada_regiao_linear = dVt_dVa(Va >= 4.57 & Va <= 11.558);
+media = sum(derivada_regiao_linear)/length(derivada_regiao_linear);
+
+plot(Va, media*ones(size(Va)), 'b--', 'LineWidth', 1.5, 'DisplayName', 'K_{mean}');
+
+% Plotar a regressão linear na região linear
+figure;
+hold on;
+scatter(Va_linear, Vt_linear, 'k', 'filled', 'DisplayName', 'Dados Coletados na Região Linear');
+plot(Va_linear, polyval(p_linear, Va_linear), 'g--', 'LineWidth', 1.5, 'DisplayName', 'Regressão Linear');
+text(5.3, 11.5, sprintf('K_{reg}: %.4f V/V', p_linear(1)), 'FontSize', 12, 'Color', 'k');
+xlabel('Va (V)');
+ylabel('Vt (V)');
+legend show;
+grid on;
