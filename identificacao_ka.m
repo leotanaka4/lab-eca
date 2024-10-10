@@ -21,10 +21,10 @@ rads_nonzero = rpm_nonzero * (2 * pi / 60); % Convertendo de rpm para rad/s
 % Criando a figura com dois subplots
 figure;
 
-% Primeiro gráfico: Vt vs rpm
+% Primeiro gráfico: Va vs rpm
 subplot(1, 2, 1); % Subplot 1, na posição da esquerda
-scatter(rpm_nonzero, Vt_nonzero, 'b', 'filled'); % Plotando os pontos Vt vs rpm
-ylabel('Vt (V)');
+scatter(rpm_nonzero, Va_nonzero, 'b', 'filled'); % Plotando os pontos Vt vs rpm
+ylabel('Va (V)');
 xlabel('W (rpm)');
 hold on;
 
@@ -38,25 +38,25 @@ for i = 1:n + 1
 end
 
 % Solução do sistema normal para mínimos quadrados com rpm
-x = (A' * A) \ (A' * Vt_nonzero'); % Vetor de coeficientes
+x = (A' * A) \ (A' * Va_nonzero'); % Vetor de coeficientes
 
 % Gerando os dados da linha de regressão com rpm
 rpm_fit = linspace(0, max(rpm_nonzero), 100);
-Vt_fit = polyval(x, rpm_fit);
+Va_fit = polyval(x, rpm_fit);
 
 % Plotando a linha de regressão linear
-plot(rpm_fit, Vt_fit, 'k--', 'LineWidth', 1.5); % Linha de regressão
+plot(rpm_fit, Va_fit, 'k--', 'LineWidth', 1.5); % Linha de regressão
 
 % Adicionando o valor da inclinação no gráfico com rpm
 slope = x(1); % Inclinação da linha (coeficiente angular)
-text(0.1 * max(rpm_nonzero), 0.9 * max(Vt_nonzero), sprintf('Kt: %.4f V/rpm', slope), 'FontSize', 12, 'Color', 'k');
+text(0.1 * max(rpm_nonzero), 0.9 * max(Va_nonzero), sprintf('1/Ka: %.4f V/rpm', slope), 'FontSize', 12, 'Color', 'k');
 grid on;
-title('Vt vs W (rpm)');
+title('Va vs W (rpm)');
 
 % Segundo gráfico: Vt vs rads (rad/s)
 subplot(1, 2, 2); % Subplot 2, na posição da direita
-scatter(rads_nonzero, Vt_nonzero, 'r', 'filled'); % Plotando os pontos Vt vs rads
-ylabel('Vt (V)');
+scatter(rads_nonzero, Va_nonzero, 'r', 'filled'); % Plotando os pontos Vt vs rads
+ylabel('Va (V)');
 xlabel('W (rad/s)');
 hold on;
 
@@ -67,23 +67,23 @@ for i = 1:n + 1
 end
 
 % Solução do sistema normal para mínimos quadrados com rads
-x_rads = (A_rads' * A_rads) \ (A_rads' * Vt_nonzero'); % Vetor de coeficientes
+x_rads = (A_rads' * A_rads) \ (A_rads' * Va_nonzero'); % Vetor de coeficientes
 
 % Gerando os dados da linha de regressão com rads
 rads_fit = linspace(0, max(rads_nonzero), 100);
-Vt_fit_rads = polyval(x_rads, rads_fit);
+Va_fit_rads = polyval(x_rads, rads_fit);
 
 % Plotando a linha de regressão linear
-plot(rads_fit, Vt_fit_rads, 'k--', 'LineWidth', 1.5); % Linha de regressão
+plot(rads_fit, Va_fit_rads, 'k--', 'LineWidth', 1.5); % Linha de regressão
 
 % Adicionando o valor da inclinação no gráfico com rads
 slope_rads = x_rads(1); % Inclinação da linha (coeficiente angular)
-text(0.1 * max(rads_nonzero), 0.9 * max(Vt_nonzero), sprintf('Kt: %.4f V/(rad/s)', slope_rads), 'FontSize', 12, 'Color', 'k');
+text(0.1 * max(rads_nonzero), 0.9 * max(Va_nonzero), sprintf('1/Ka: %.4f V/(rad/s)', slope_rads), 'FontSize', 12, 'Color', 'k');
 grid on;
-title('Vt vs W (rad/s)');
+title('Va vs W (rad/s)');
 
 % Exibindo os valores de Kt no terminal
-Kt_rpm = 1/slope;
-Kt_rads = 1/slope_rads;
-fprintf('Kt (V/rpm): %.4f\n', slope);
-fprintf('Kt (V/rad/s): %.4f\n', slope_rads);
+Ka_rpm = 1/slope;
+Ka_rads = 1/slope_rads;
+fprintf('Ka (V/rpm): %.4f\n', 1/slope);
+fprintf('Ka (V/rad/s): %.4f\n', 1/slope_rads);
