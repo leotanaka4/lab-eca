@@ -86,4 +86,4 @@ title('Va vs W (rad/s)');
 Ka_rpm = 1/slope;
 Ka_rads = 1/slope_rads;
 fprintf('Ka (V/rpm): %.4f\n', 1/slope);
-fprintf('Ka (V/(rad/s)): %.4f\n', 1/slope_rads);
+fprintf('Ka (V/(rad/s): %.4f\n', 1/slope_rads);

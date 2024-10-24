@@ -110,9 +110,9 @@ tau_area = A0/(media_canal2_sup - media_canal2_inf);
 disp('Constante de tempo:');
 disp(tau_area);
 
-G = tf(ganho_K,[tau_area 1]);
-figure;
-bode(G);
+%G = tf(ganho_K,[tau_area 1]);
+%figure;
+%bode(G);
 
 
 ind=[1:100:length(t)];
@@ -209,39 +209,6 @@ hold on
 hold on
 %plot(tempo2_f03, canal2_f03, 'm-', 'LineWidth', 1.5);
 hold off; % Libera o gráfico
-
-% Lista de todos os nomes de arquivos para Canal 1 e Canal 2
-files_C1 = {'C1_02.CSV', 'C1_03.CSV', 'C1_05.CSV', 'C1_08.CSV', 'C1_14.CSV', 'C1_23.CSV', 'C1_38.CSV', 'C1_64.CSV', 'C1_107.CSV', 'C1_178.CSV'};
-files_C2 = {'C2_02.CSV', 'C2_03.CSV', 'C2_05.CSV', 'C2_08.CSV', 'C2_14.CSV', 'C2_23.CSV', 'C2_38.CSV', 'C2_64.CSV', 'C2_107.CSV', 'C2_178.CSV'};
-
-% Inicializa vetores de células para armazenar as tabelas e os dados de tempo e canal
-data_C1 = cell(1, length(files_C1));
-data_C2 = cell(1, length(files_C2));
-tempo_C1 = cell(1, length(files_C1));
-canal_C1 = cell(1, length(files_C1));
-tempo_C2 = cell(1, length(files_C2));
-canal_C2 = cell(1, length(files_C2));
-
-% Loop para carregar e armazenar os dados de todos os arquivos
-for i = 1:length(files_C1)
-    % Carrega dados do Canal 1
-    data_C1{i} = readtable(files_C1{i}); % Armazena a tabela completa do Canal 1
-    tempo_C1{i} = data_C1{i}.(1);        % Armazena a coluna de tempo do Canal 1
-    canal_C1{i} = data_C1{i}.(2);        % Armazena a coluna de canal do Canal 1
-    
-    % Carrega dados do Canal 2
-    data_C2{i} = readtable(files_C2{i}); % Armazena a tabela completa do Canal 2
-    tempo_C2{i} = data_C2{i}.(1);        % Armazena a coluna de tempo do Canal 2
-    canal_C2{i} = data_C2{i}.(2);        % Armazena a coluna de canal do Canal 2
-
-    [a0_u{i}, C_u{i}, phi_u{i}] = algo_3_2(f, t, N)
-    % f: vetor com os valores da função
-    % t: vetor com os tempos correspondentes
-    % N: número de harmônicos a serem determinados
-end
-    
-
-omega = pontos_resp_freq;
 
 
 
