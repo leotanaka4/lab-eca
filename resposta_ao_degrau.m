@@ -11,9 +11,9 @@ canal2 = data2.(2);
 %
 % Gera o gráfico de ambos os canais na mesma figura
 figure;
-plot(tempo1, canal1, 'r-', 'LineWidth', 1.5); % Gráfico do Canal 1 em vermelho
+plot(tempo1, canal1, 'r-', 'LineWidth', 0.5); % Gráfico do Canal 1 em vermelho
 hold on; % Mantém o gráfico atual para adicionar o próximo
-plot(tempo2, canal2, 'b-', 'LineWidth', 1.5); % Gráfico do Canal 2 em azul
+plot(tempo2, canal2, 'b-', 'LineWidth', 0.5); % Gráfico do Canal 2 em azul
 hold off; % Libera o gráfico
 
 % Personalização do gráfico
@@ -85,9 +85,9 @@ canal2_zero = canal2_ajuste - media_canal2_inf;
 %
 % Gera o gráfico de ambos os canais centralizados em 0 na mesma figura
 figure;
-plot(t, canal1_zero, 'r-', 'LineWidth', 1.5); % Gráfico do Canal 1 em vermelho
+plot(t, canal1_zero, 'r-', 'LineWidth', 0.5); % Gráfico do Canal 1 em vermelho
 hold on; % Mantém o gráfico atual para adicionar o próximo
-plot(t, canal2_zero, 'b-', 'LineWidth', 1.5); % Gráfico do Canal 2 em azul
+plot(t, canal2_zero, 'b-', 'LineWidth', 0.5); % Gráfico do Canal 2 em azul
 hold off; % Libera o gráfico
 
 % Personalização do gráfico
@@ -149,9 +149,9 @@ disp(simOut);
 %close_system('labeca_simulink', 0); 
 
 figure;
-plot(t, canal1_zero, 'r-', 'LineWidth', 1.5); % Gráfico do Canal 1 em vermelho
+plot(t, canal1_zero, 'r-', 'LineWidth', 0.5); % Gráfico do Canal 1 em vermelho
 hold on; % Mantém o gráfico atual para adicionar o próximo
-plot(t, canal2_zero, 'b-', 'LineWidth', 1.5); % Gráfico do Canal 2 em azul
+plot(t, canal2_zero, 'b-', 'LineWidth', 0.5); % Gráfico do Canal 2 em azul
 hold on;
 plot(simOut.resposta_area.Time, simOut.resposta_area.Data, 'g-', 'LineWidth', 2.5);
 hold on; 
@@ -159,7 +159,13 @@ plot(simOut.resposta_nep.Time, simOut.resposta_nep.Data, 'm-', 'LineWidth', 2.5)
 legend('Canal 1', 'Canal 2','Resposta Área', 'Resposta Nep');
 hold off; % Libera o gráfico
 
+% Personalização do gráfico
+xlabel('Tempo (s)');
+ylabel('Tensão (V)');
+title('Gráfico de Validação dos modelos (Tempo(s) vs Volts(V))');
+grid on;
 
+%{
 figure;
 plot(t_nep, y_t, 'r-', 'LineWidth', 1.5); % Gráfico do Canal 1 em vermelho
 hold off; % Libera o gráfico
@@ -169,3 +175,10 @@ hold off; % Libera o gráfico
 
 ind=[1:100:length(t)];tnew=t(ind);vtnew=canal2_zero(ind);vanew=canal1_zero(ind);
 plot(tnew, [vanew vtnew]);
+% Personalização do gráfico
+xlabel('Tempo (s)');
+ylabel('Tensão (V)');
+title('Gráfico de Tempo vs. Canais 1 e 2 do Osciloscópio');
+legend('Canal 1', 'Canal 2'); % Adiciona uma legenda
+grid on;
+%}
