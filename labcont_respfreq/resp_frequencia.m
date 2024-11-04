@@ -248,8 +248,8 @@ function import_signals(frequencies, num_samples, c1_folder)%, c2_folder)
         %Plotar a0, a0+a1 sen wt + phi e o sinal real
         figure;
         hold on;
-        plot(t_segment, u_segment, 'r', 'LineWidth', 1.5);  % Sinal real u(t)
-        plot(t_segment, y_segment, 'b', 'LineWidth', 1.5);  % Sinal real y(t)
+        plot(t_segment, u_segment, 'r', 'LineWidth', 0.5);  % Sinal real u(t)
+        plot(t_segment, y_segment, 'b', 'LineWidth', 0.5);  % Sinal real y(t)
         plot(t_segment, u_approx, 'g-', 'LineWidth', 1.5);  % a0_u + a1_u*sin(wt)
         plot(t_segment, y_approx, 'y-', 'LineWidth', 1.5);  % a0_y + a1_y*sin(wt)
         plot(t_segment, a0_y * ones(size(t_segment)), 'y--', 'LineWidth', 1.5);  % a0_y
