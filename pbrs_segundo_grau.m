@@ -1,21 +1,40 @@
+close all
 
 Kt = 0.1527;   %de acordo com o codigo identificacao_Kt (em V/(rad/s))
-%Ka = 8.9673;  %de acordo com o codigo identificacao_Ka (em (rad/s)/V)
+%   revisar Kt
+Ka = 8.9673;  %de acordo com o codigo identificacao_Ka (em (rad/s)/V)
 K = 1.3446;    %de acordo com o codigo identificacao_linear (em V/V)
 %Kg = 1/K;
 
 Kg = Kt/K;
-Ka = Kg;
+%Kg = 1/Kt*K;
+%Kg = 1/Ka;
 
 
-data = readtable('WV2O.csv'); 
+data = readtable('WV_2O_5.csv'); 
 % Extrai as colunas de tempo e canal 1
 
 % Dados
 Va = data.(2);  
-Ia = data.(3)*2.8633;  
+Ia = data.(3)*20;   %2.8633;  
 Vt = data.(4);
 t = data.(1);  
+
+%Va = Va-Va(1);  
+%Ia = Ia-Ia(1);  
+%Vt = Vt-Vt(1);
+
+V_a.time = t;
+V_a.signals.values = Va;
+V_a.signals.dimensions = 1;
+
+V_t.time = t;
+V_t.signals.values = Vt;
+V_t.signals.dimensions = 1;
+
+I_a.time = t;
+I_a.signals.values = Ia;
+I_a.signals.dimensions = 1;
 
 h = t(2)-t(1);     % intervalo de amostragem
 
@@ -37,6 +56,16 @@ xlabel('Tempo (s)');
 ylabel('Um (V)');
 title('Resposta de Um(t)');
 
+figure;
+plot(t, Ia);
+hold on;
+plot(t, Va);
+hold on;
+plot(t, Vt);
+xlabel('Tempo (s)');
+ylabel('Ue (V)');
+title('Resposta de Ue(t)');
+hold off;
 
 
 % Construção da matriz Me (equação 4.39a)
@@ -73,4 +102,18 @@ fprintf('Ra = %.4f\n', Ra);
 fprintf('La = %.4f\n', La);
 fprintf('f = %.4f\n', f);
 fprintf('J = %.4f\n', J);
+
+A = [-Ra/La, -Kg/(Kt*La);
+      Ka*Kt/J, -f/J];
+B = [1/La;
+     0];
+C = [0 1];
+
+sys = ss(A,B,C,0);
+
+transferf = tf(sys)
+polos = pole(transferf)
+
+
+
 
