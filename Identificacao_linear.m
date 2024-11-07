@@ -51,8 +51,8 @@ grid on;
 hold on;
 
 % Filtrar os dados para a região linear (4.57 <= Va <= 11.27)
-Va_linear = Va(Va >= 4.57 & Va <= 11.558);
-Vt_linear = Vt(Va >= 4.57 & Va <= 11.558);
+Va_linear = Va(Va >= 4.57 & Va <= 13.117);
+Vt_linear = Vt(Va >= 4.57 & Va <= 13.117);
 
 % Realizar a regressão linear na região linear
 p_linear = polyfit(Va_linear, Vt_linear, 1);
@@ -62,7 +62,7 @@ disp('Inclinação da reta na região linear (4.57 V <= Va <= 11.558 V):');
 disp(p_linear(1));
 
 % Avaliar os pontos das extremidades no polinômio
-Va_extremidades = [4.57, 11.558];
+Va_extremidades = [4.57, 13.117];
 dVt_dVa_extremidades = polyval(dp, Va_extremidades);
 
 % Plotar os pontos que representam as extremidades da região linear
@@ -74,7 +74,7 @@ legend show;
 % Plotar a reta constante da inclinação sobre a derivada
 plot(Va, p_linear(1)*ones(size(Va)), 'g--', 'LineWidth', 1.5, 'DisplayName', 'K_{reg}');
 
-derivada_regiao_linear = dVt_dVa(Va >= 4.57 & Va <= 11.558);
+derivada_regiao_linear = dVt_dVa(Va >= 4.57 & Va <= 13.117);
 media = sum(derivada_regiao_linear)/length(derivada_regiao_linear);
 
 plot(Va, media*ones(size(Va)), 'b--', 'LineWidth', 1.5, 'DisplayName', 'K_{mean}');
