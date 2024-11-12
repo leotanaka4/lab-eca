@@ -1,6 +1,7 @@
 % Parâmetros do sistema
 K = 1.3157;
 tau = 0.0894;
+K_amp = 5;
 
 % Especificações de desempenho
 PO =0.05;
@@ -39,6 +40,7 @@ sol = solve(eqns, Ki);
 
 % Valores encontrados para Ki
 Ki_val = double(sol); % aq era sol.Ki pq tinha mais de uma variavel
+Ki_val = Ki_val/K_amp;
 
 % Função de transferência do controlador PI com os valores encontrados
 C_cont = tf([Ki_val], [1, 0]);
@@ -47,6 +49,6 @@ C_cont = tf([Ki_val], [1, 0]);
 G = tf(K, [tau, 1]);
 
 % Sistema em malha fechada com o controlador PI
-closed_loop_cont = feedback(C_cont * G, 1);
+closed_loop_cont = feedback(C_cont * K_amp * G, 1);
 
 step(closed_loop_cont) % Fica uma merda pq n tem grau de liberdade o suficiente ent o polinomio n consegue ser igual ao desejado

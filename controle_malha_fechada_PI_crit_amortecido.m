@@ -4,11 +4,7 @@ tau = 0.0894;
 K_amp = 5;
 
 % Especificações de desempenho
-PO =0.05;
-zeta = -log(PO) / sqrt(pi^2 + (log(PO))^2);
 tss = 4*tau;
-wn = 4/(tss*zeta);
-desired_poles = [1, 2*zeta*wn, wn^2];
 
 syms Kp Ti s
 % Função de transferência do motor CC
@@ -20,27 +16,35 @@ C = Kp * (1 + 1/(Ti * s));
 L = C * G;
 closed_loop_tf = simplify(L / (1 + L));
 
-% Encontrar os coeficientes do polinômio característico do sistema de malha fechada
+% Coeficientes do polinômio característico
 [~, den] = numden(closed_loop_tf);
-den = collect(den, s);  % Coletar os termos em s
-coeffs_den = coeffs(den, s, 'All');  % Encontrar os coeficientes
+den = collect(den, s); % Coletar os termos em s
+coeffs_den = coeffs(den, s, 'All'); % Obter os coeficientes
 
-% Normalizar os coeficientes dividindo pelo termo de s^2
+% Normalizar pelo termo de s^2
 coeff_s2 = coeffs_den(1);
 coeffs_den = coeffs_den / coeff_s2;
 
-% Polinômio desejado do denominador do sistema de malha fechada
-desired_poly = [1, 2*zeta*wn, wn^2];
+% Extração de coeficientes
+a = coeffs_den(1); % Coeficiente de s^2
+b = coeffs_den(2); % Coeficiente de s
+c = coeffs_den(3); % Coeficiente constante
 
-% Igualar os coeficientes do polinômio característico ao polinômio desejado
-eqns = coeffs_den(2:3) == desired_poly(2:3);
+% Determinar wn e zeta a partir dos coeficientes
+wn = sqrt(c); 
+zeta = b / (2 * wn);
 
-% Resolver as equações para Kp e Ti
-sol = solve(eqns, [Kp, Ti]);
+% Equações de projeto
+eq1 = tss == 4 / (zeta * wn); % Tempo de acomodação
+delta = b^2 - 4 * a * c; % Delta para verificar polos coincidentes
+eq2 = delta == 0; 
 
-% Valores encontrados para Kp e Ti
+% Resolver para Kp e Ti
+sol = solve([eq1, eq2], [Kp, Ti]);
+
+% Extrair soluções
 Kp_val = double(sol.Kp);
-Kp_val = Kp_val/K_amp;
+Kp_val = Kp_val / K_amp; % Ajuste pelo ganho do amplificador
 Ti_val = double(sol.Ti);
 
 % Função de transferência do controlador PI com os valores encontrados
