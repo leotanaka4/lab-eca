@@ -2,13 +2,14 @@ close all
 
 Kt = 0.1527;   %de acordo com o codigo identificacao_Kt (em V/(rad/s))
 %   revisar Kt
-Ka = 8.9673;  %de acordo com o codigo identificacao_Ka (em (rad/s)/V)
+%Ka = 8.9673;  %de acordo com o codigo identificacao_Ka (em (rad/s)/V)
 K = 1.3446;    %de acordo com o codigo identificacao_linear (em V/V)
 %Kg = 1/K;
 
 Kg = Kt/K;
-%Kg = 1/Kt*K;
+%Kg = 1/(Kt*K);
 %Kg = 1/Ka;
+Ka = Kg;
 
 
 data = readtable('WV_2O_5.csv'); 
@@ -16,7 +17,7 @@ data = readtable('WV_2O_5.csv');
 
 % Dados
 Va = data.(2);  
-Ia = data.(3)*20;   %2.8633;  
+Ia = data.(3)*20;   % 20 é o ganho 
 Vt = data.(4);
 t = data.(1);  
 
